@@ -1,85 +1,129 @@
-class TicketManager {
-    #precioBaseGanancia = 0.15
-    constructor(nombre){
-        this.nombre =nombre
-        this.eventos = []
-    } 
+const fs = require ('fs');
 
-    getEventos(){
-        return this.eventos
-    }
-    agregarEventos(nombre,lugar,precio, capacidad=50, fecha= new Date() ){
-        const evento = {
-            id: this.#agregarId(),
-            nombre,
-            lugar,
-            precio: precio + this.#precioBaseGanancia,
-            capacidad,
-            fecha,
-            participantes: []
+const datos = './datos.json';
 
-        }
-        this.eventos.push(evento)
-    }
-
-    agregarUsuario (idEvento,idUsuario){
-        const evento = this.#evaluarEvento(idEvento)
-        if (evento){
-            if (evento.participantes.incluides(idUsuario)){
-                console.log('partipante ya esta incluido en este evento')
+class ProductManager{
+    async getProduct (){
+        try {
+            if (fs.existsSync(datos)) {
+                const productos = await fs.promises.readFile(datos,'utf8')
+                const productosJS = JSON.parse(productos)
+                return productosJS
             } else {
-                evento.participantes.push(idUsuario)
-                console.log('participante incluido con exito')
+                return []
             }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+addProduct = async (productos)=>{
+    try {
+        const datoId = await this.getProduct();
+        if (datoId.length ===0) {
+            productos.id =1;
+            datoId.push(productos);
+            await fs.promises.writeFile(datos,JSON.stringify(datoId,null,'\t'));
+
         }else{
-            console.log('evento no existe')
-        }
-    }
+            productos.id = datoId[datoId.length-1].id+1;
+            datoId.push(productos);
+            await fs.promises.writeFile(datos,JSON.stringify(datoId,null,'\t'));
 
-    ponerEventoGira(idEvento,nuevoLugar,nuevaFecha){
-        const evento = this.#evaluarEvento(idEvento)
-            if (evento){
-                const nuevoEvento ={
-                    ...evento,
-                    id:this.#agregarId,
-                    lugar: nuevoLugar,
-                    fecha: nuevaFecha,
-                    participantes:[]
-                }
-                this.eventos.push(nuevoEvento)
-            } else {
-                console.log ('evento no existe')
-                }
         }
-
-    #agregarId(){
-        let id = 1
-        if (this.eventos.length!==0){
-            id = this.eventos[this.eventos.length-1].id+1
-        }
-        return id
-    }
-    #evaluarEvento(idEvento){
-        return this.eventos.find(evento=>evento.id===idEvento)
+    } catch (error) {
+        console.log(error)
     }
 }
 
-const TicketManager1 = new TicketManager('oscar')
-const TicketManager2 = new TicketManager()
+getDelete = async id =>{
+    const productos = await this.getProduct();
+    try {
+        const indexOfElement  = productos.findIndex(datos => datos.id != id);
+        productos.slice(indexOfElement,1);
+        await this.WriteFile(productos);
+    } catch (error) {
+        console.log(error)
+    }
+}
 
-TicketManager1.agregarEventos('evento1','luaga1',3,100,)
+getFindId = async id => {
+    const producto = await this.getProduct();
+    try {
+        const product = producto.find(id=>datos.id === id );
+        return product ? product : null;
+    } catch (error) {
+        console.log(error)
+    }
+}
 
-TicketManager1.agregarEventos('evento2','luaga2',2.50,50,)
-
-TicketManager1.agregarEventos('evento3','luaga3',10,80,)
-
-TicketManager1.agregarEventos(2,1)
-TicketManager1.agregarEventos(2,1)
-
-TicketManager1.ponerEventoGira('evento4','lugar4', new Date ('01/10/2023'))
-
-TicketManager1.ponerEventoGira('evento1','lugar4', new Date ('05/10/2023'))
+}
 
 
-console.log (TicketManager1.getEventos())
-//console.log (TicketManager2.getEventos());
+
+
+
+
+const producto = new ProductManager()
+    const producto1 = {
+        "title":"productopp1",
+        "description":"este es el producto 1",
+        "price": 200,
+        "thumbnail":"sin imagen",
+        "code":"abc123",
+        "stock":20
+    }
+    const producto2 = {
+        "title":"productopp2",
+        "description":"este es el producto 2",
+        "price": 400,
+        "thumbnail":"sin imagen",
+        "code":"abc1234",
+        "stock":15
+    }
+
+    const producto3 = {
+        "title":"productopp3",
+        "description":"este es el producto 3",
+        "price": 150,
+        "thumbnail":"sin imagen",
+        "code":"abc12345",
+        "stock":45
+    }
+    const producto4 = {
+        "title":"productopp4",
+        "description":"este es el producto 3",
+        "price": 150,
+        "thumbnail":"sin imagen",
+        "code":"abc12345",
+        "stock":45
+    }
+
+/*async function entrega (){
+    const getProduct = await producto.getProduct()
+    console.log (getProduct)
+
+    /*await producto.addProduct(producto4)*/
+
+
+/*entrega()*/
+
+async function idproduct (){
+    const getFindId = await producto.getFindId(2)
+    console.log (getFindId)
+
+    
+}
+
+idproduct(2)
+
+console.log(idproduct);
+
+/*async function deletepr (){
+    const getDelete = await producto.getDelete(3)
+    console.log (getDelete)
+
+    
+}
+
+
+console.log(deletepr); */
