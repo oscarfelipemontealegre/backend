@@ -35,22 +35,33 @@ addProduct = async (productos)=>{
     }
 }
 
-getDelete = async id =>{
-    const productos = await this.getProduct();
+deleteId = async(id)=>{
     try {
-        const indexOfElement  = productos.findIndex(datos => datos.id != id);
-        productos.slice(indexOfElement,1);
-        await this.WriteFile(productos);
+        const datoId = await this.getProduct();
+        const productoId = datoId.filter(producto=>producto.id !==id);
+        await fs.promises.writeFile(datos,JSON.stringify(productoId,null,'\t'));
+    } catch (error) {
+        console.log('el id, ha sido eliminado')
+    }
+}
+
+encontrarId = async(id)=>{
+    try {
+        const datoId = await this.getProduct();
+        const productoId = datoId.filter(producto=>producto.id === id);
+        await fs.promises.writeFile(datos,JSON.stringify(productoId,null,'\t'));
     } catch (error) {
         console.log(error)
     }
 }
 
-getFindId = async id => {
-    const producto = await this.getProduct();
+actulizarId = async(id,productos)=>{
     try {
-        const product = producto.find(id=>datos.id === id );
-        return product ? product : null;
+        const datoId = await this.getProduct();
+        const productoId = datoId.filter(producto => producto.id !==id);
+        productos.id=id;
+        productoId.push(productos)
+        await fs.promises.writeFile(datos,JSON.stringify(productoId, null,'\t'));
     } catch (error) {
         console.log(error)
     }
@@ -64,6 +75,9 @@ getFindId = async id => {
 
 
 const producto = new ProductManager()
+
+module.exports = producto;
+
     const producto1 = {
         "title":"productopp1",
         "description":"este es el producto 1",
@@ -98,32 +112,10 @@ const producto = new ProductManager()
         "stock":45
     }
 
-/*async function entrega (){
-    const getProduct = await producto.getProduct()
-    console.log (getProduct)
-
-    /*await producto.addProduct(producto4)*/
 
 
-/*entrega()*/
-
-async function idproduct (){
-    const getFindId = await producto.getFindId(2)
-    console.log (getFindId)
-
-    
-}
-
-idproduct(2)
-
-console.log(idproduct);
-
-/*async function deletepr (){
-    const getDelete = await producto.getDelete(3)
-    console.log (getDelete)
-
-    
-}
-
-
-console.log(deletepr); */
+/*producto.deleteId(7)
+/*producto.encontrarId(1)*/
+/*producto.addProduct(producto3)
+producto.addProduct(producto4)*/
+/*producto.actulizarId(1,{price:150,stock:25})*/
