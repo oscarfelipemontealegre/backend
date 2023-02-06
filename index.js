@@ -1,12 +1,17 @@
-const fs = require ('fs');
+import fs from 'fs'
 
 const datos = './datos.json';
 
-class ProductManager{
+export class ProductManager{
+    constructor(datos){
+        this.datos=datos
+    }
+
+
     async getProduct (){
         try {
-            if (fs.existsSync(datos)) {
-                const productos = await fs.promises.readFile(datos,'utf8')
+            if (existsSync(this.datos)) {
+                const productos = await promises.readFile(this.datos,'utf8')
                 const productosJS = JSON.parse(productos)
                 return productosJS
             } else {
@@ -22,12 +27,12 @@ addProduct = async (productos)=>{
         if (datoId.length ===0) {
             productos.id =1;
             datoId.push(productos);
-            await fs.promises.writeFile(datos,JSON.stringify(datoId,null,'\t'));
+            await promises.writeFile(datos,JSON.stringify(datoId,null,'\t'));
 
         }else{
             productos.id = datoId[datoId.length-1].id+1;
             datoId.push(productos);
-            await fs.promises.writeFile(datos,JSON.stringify(datoId,null,'\t'));
+            await promises.writeFile(datos,JSON.stringify(datoId,null,'\t'));
 
         }
     } catch (error) {
@@ -39,7 +44,7 @@ deleteId = async(id)=>{
     try {
         const datoId = await this.getProduct();
         const productoId = datoId.filter(producto=>producto.id !==id);
-        await fs.promises.writeFile(datos,JSON.stringify(productoId,null,'\t'));
+        await promises.writeFile(datos,JSON.stringify(productoId,null,'\t'));
     } catch (error) {
         console.log('el id, ha sido eliminado')
     }
@@ -49,7 +54,7 @@ encontrarId = async(id)=>{
     try {
         const datoId = await this.getProduct();
         const productoId = datoId.filter(producto=>producto.id === id);
-        await fs.promises.writeFile(datos,JSON.stringify(productoId,null,'\t'));
+        await promises.writeFile(datos,JSON.stringify(productoId,null,'\t'));
     } catch (error) {
         console.log(error)
     }
@@ -61,7 +66,7 @@ actulizarId = async(id,productos)=>{
         const productoId = datoId.filter(producto => producto.id !==id);
         productos.id=id;
         productoId.push(productos)
-        await fs.promises.writeFile(datos,JSON.stringify(productoId, null,'\t'));
+        await promises.writeFile(datos,JSON.stringify(productoId, null,'\t'));
     } catch (error) {
         console.log(error)
     }
@@ -76,7 +81,7 @@ actulizarId = async(id,productos)=>{
 
 const producto = new ProductManager()
 
-module.exports = producto;
+export default producto;
 
     const producto1 = {
         "title":"productopp1",
